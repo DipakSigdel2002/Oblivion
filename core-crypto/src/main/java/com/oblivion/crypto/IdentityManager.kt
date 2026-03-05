@@ -1,20 +1,26 @@
 package com.oblivion.crypto
 
 import org.bitcoinj.wallet.DeterministicSeed
+import org.bouncycastle.crypto.generators.Ed25519KeyPairGenerator
+import org.bouncycastle.crypto.params.Ed25519KeyGenerationParameters
 import java.security.SecureRandom
 
 object IdentityManager {
 
-    /**
-     * Generates a new 12-word Mnemonic.
-     * This is the "Security Code" user must save to restore their address.
-     */
-    fun createMnemonic(): String {
+    fun generateNewIdentity(): IdentityResult {
+        // Generate Mnemonic: Using the simple constructor
         val seedBytes = ByteArray(16)
         SecureRandom().nextBytes(seedBytes)
-        val seed = DeterministicSeed(seedBytes, null, "", System.currentTimeMillis())
-        return seed.mnemonicCode?.joinToString(" ") ?: ""
+        // Simplified constructor
+        val seed = DeterministicSeed(seedBytes, "", System.currentTimeMillis())
+        val mnemonic = seed.mnemonicCode?.joinToString(" ") ?: ""
+
+        val generator = Ed25519KeyPairGenerator()
+        generator.init(Ed25519KeyGenerationParameters(SecureRandom()))
+        val keyPair = generator.generateKeyPair()
+
+        return IdentityResult(mnemonic, keyPair)
     }
 
-    // TODO: Phase 2 will implement Ed25519 + Tor v3 address derivation from this Mnemonic
+    data class IdentityResult(val mnemonic: String, val keyPair: org.bouncycastle.crypto.AsymmetricCipherKeyPair)
 }
