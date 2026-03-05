@@ -1,15 +1,18 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt' // No version here! The root handles the version.
 }
+
 android {
     namespace 'com.oblivion.data'
     compileSdk 34
 }
+
 dependencies {
     implementation 'net.zetetic:sqlcipher-android:4.5.4@aar'
     implementation 'androidx.room:room-runtime:2.6.0'
     kapt 'androidx.room:room-compiler:2.6.0'
-    // BouncyCastle for Argon2id hashing
+    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
 }
