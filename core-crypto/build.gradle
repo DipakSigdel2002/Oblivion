@@ -6,14 +6,15 @@ plugins {
 android {
     namespace 'com.oblivion.crypto'
     compileSdk 34
-    defaultConfig {
-        minSdk 26
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
+    kotlinOptions { jvmTarget = "17" }
 }
 
 dependencies {
-    // BIP39 Mnemonic Generator
-    implementation 'org.bitcoinj:bitcoinj-core:0.16.2'
-    // BouncyCastle for Ed25519 (Identity)
     implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
+    implementation 'org.bitcoinj:bitcoinj-core:0.16.2'
+    implementation 'org.whispersystems:signal-protocol-android:2.8.1'
 }
