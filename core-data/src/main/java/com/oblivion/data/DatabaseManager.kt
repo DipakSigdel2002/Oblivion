@@ -5,7 +5,7 @@ import androidx.room.*
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 
 // Room Database setup
-@Database(entities = [], version = 1, exportSchema = false)
+@Database(entities = [MessageEntity::class, ContactEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     companion object {
         fun getDatabase(context: Context, pin: String): AppDatabase {

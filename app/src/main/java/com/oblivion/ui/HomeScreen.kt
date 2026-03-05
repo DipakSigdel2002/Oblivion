@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -173,7 +173,7 @@ fun ChatListScreen(chats: List<ChatPreview>) {
         LazyColumn(contentPadding = PaddingValues(top = 16.dp, bottom = 120.dp)) {
             items(chats) { chat ->
                 ChatItem(chat)
-                // THE FIX: Using Divider instead of HorizontalDivider
+                // Divider handled here ensures it appears between items, not top/bottom of every item
                 Divider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(start = 84.dp, end = 20.dp))
             }
         }
@@ -182,6 +182,7 @@ fun ChatListScreen(chats: List<ChatPreview>) {
 
 @Composable
 fun ChatItem(chat: ChatPreview) {
+	Divider(color = Color(0xFFF0F0F0), thickness = 1.dp, modifier = Modifier.padding(start = 84.dp, end = 20.dp))
     Row(
         modifier = Modifier.fillMaxWidth().clickable { /* Open Chat Action */ }.padding(horizontal = 24.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
