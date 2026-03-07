@@ -3,19 +3,27 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
+
 android {
     namespace 'com.oblivion.data'
     compileSdk 34
-    defaultConfig { minSdk 26 }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
 }
+
+// THIS FIXES KAPT CONFIGURATION ERRORS
+kapt {
+    correctErrorTypes true
+}
+
 dependencies {
     implementation 'net.zetetic:sqlcipher-android:4.5.4@aar'
-    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
     implementation 'androidx.room:room-runtime:2.6.0'
-    kapt 'androidx.room:room-compiler:2.6.0'
+    kapt 'androidx.room:room-compiler:2.6.0' // KAPT handles the compiler
+    implementation 'androidx.sqlite:sqlite-ktx:2.4.0'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.70'
 }
