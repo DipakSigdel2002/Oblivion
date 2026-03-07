@@ -8,6 +8,10 @@ import java.security.SecureRandom
 class AuthVault(context: Context) {
     private val prefs = context.getSharedPreferences("oblivion_vault", Context.MODE_PRIVATE)
 
+    fun isPinSet(): Boolean {
+        return prefs.contains("pin_hash")
+    }
+
     fun setupVault(pin: String) {
         val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
         val hash = hashPin(pin, salt)
@@ -16,6 +20,15 @@ class AuthVault(context: Context) {
             .putString("pin_hash", hash.encodeBase64())
             .putString("pin_salt", salt.encodeBase64())
             .apply()
+    }
+
+    fun verifyPin(pin: String): Boolean {
+        val storedHash = prefs.getString("pin_hash", null) ?: return false
+        val storedSaltBase64 = prefs.getString("pin_salt", null) ?: return false
+        val salt = android.util.Base64.decode(storedSaltBase64, android.util.Base64.DEFAULT)
+        
+        val inputHash = hashPin(pin, salt)
+        return inputHash.encodeBase64() == storedHash
     }
 
     private fun hashPin(pin: String, salt: ByteArray): ByteArray {
