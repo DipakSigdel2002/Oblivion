@@ -3,8 +3,6 @@ package com.oblivion
 import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
-// THE FIX: Corrected import path
-import net.sqlcipher.database.SQLiteDatabase
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -19,8 +17,9 @@ class OblivionApp : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        // Load SQLCipher's native C/C++ libraries
-        SQLiteDatabase.loadLibs(this)
+        // THE FIX: Modern SQLCipher uses standard Android native library loading.
+        // No imports required!
+        System.loadLibrary("sqlcipher")
 
         // Crash Reporter
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
