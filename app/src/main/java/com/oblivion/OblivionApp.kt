@@ -3,7 +3,8 @@ package com.oblivion
 import android.content.Context
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
-import net.zetetic.database.sqlcipher.SQLiteDatabase
+// THE FIX: Corrected import path
+import net.sqlcipher.database.SQLiteDatabase
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -12,17 +13,16 @@ class OblivionApp : MultiDexApplication() {
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
-        // FIX 1: Install MultiDex before ANY classes are loaded
         MultiDex.install(this)
     }
 
     override fun onCreate() {
         super.onCreate()
 
-        // FIX 2: Load SQLCipher's native C/C++ libraries
+        // Load SQLCipher's native C/C++ libraries
         SQLiteDatabase.loadLibs(this)
 
-        // Crash Reporter: Saves to public Android/data/com.oblivion/files/
+        // Crash Reporter
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             val sw = StringWriter()
             throwable.printStackTrace(PrintWriter(sw))
