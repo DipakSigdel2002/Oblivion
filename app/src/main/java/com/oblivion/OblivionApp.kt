@@ -1,25 +1,36 @@
 package com.oblivion
 
-import android.app.Application
+import android.content.Context
+import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
+import net.zetetic.database.sqlcipher.SQLiteDatabase
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 
-class OblivionApp : Application() {
+class OblivionApp : MultiDexApplication() {
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        // FIX 1: Install MultiDex before ANY classes are loaded
+        MultiDex.install(this)
+    }
+
     override fun onCreate() {
         super.onCreate()
 
-        // Install the Crash Catcher
-        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+        // FIX 2: Load SQLCipher's native C/C++ libraries
+        SQLiteDatabase.loadLibs(this)
+
+        // Crash Reporter: Saves to public Android/data/com.oblivion/files/
+        Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
             val sw = StringWriter()
             throwable.printStackTrace(PrintWriter(sw))
-            val crashReport = sw.toString()
+            try {
+                val file = File(getExternalFilesDir(null), "crash_report.txt")
+                file.writeText(sw.toString())
+            } catch (_: Exception) {}
             
-            // Save to a file in internal storage
-            val file = File(filesDir, "crash_report.txt")
-            file.writeText(crashReport)
-            
-            // Exit the app
             android.os.Process.killProcess(android.os.Process.myPid())
             System.exit(1)
         }

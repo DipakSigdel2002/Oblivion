@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.oblivion.app'
+    namespace 'com.oblivion'
     compileSdk 34
     
     defaultConfig {
