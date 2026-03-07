@@ -7,14 +7,16 @@ import java.security.SecureRandom
 
 object IdentityManager {
 
+    /**
+     * Generates a new BIP39 Mnemonic and derives the Identity Key.
+     * This is the "Root of Trust" for the user.
+     */
     fun generateNewIdentity(): IdentityResult {
-        // Generate Mnemonic: Using the simple constructor
-        val seedBytes = ByteArray(16)
-        SecureRandom().nextBytes(seedBytes)
-        // Simplified constructor
-        val seed = DeterministicSeed(seedBytes, "", System.currentTimeMillis())
+        // 1. Generate Mnemonic (128 bits = 12 words) directly via SecureRandom
+        val seed = DeterministicSeed(SecureRandom(), 128, "", System.currentTimeMillis() / 1000L)
         val mnemonic = seed.mnemonicCode?.joinToString(" ") ?: ""
 
+        // 2. Generate Ed25519 Keypair
         val generator = Ed25519KeyPairGenerator()
         generator.init(Ed25519KeyGenerationParameters(SecureRandom()))
         val keyPair = generator.generateKeyPair()
@@ -22,5 +24,8 @@ object IdentityManager {
         return IdentityResult(mnemonic, keyPair)
     }
 
-    data class IdentityResult(val mnemonic: String, val keyPair: org.bouncycastle.crypto.AsymmetricCipherKeyPair)
+    data class IdentityResult(
+        val mnemonic: String, 
+        val keyPair: org.bouncycastle.crypto.AsymmetricCipherKeyPair
+    )
 }
